@@ -45,19 +45,19 @@ public final class UVGemCleanup extends JavaPlugin implements Listener {
     private void checkInventory(Inventory inventory) {
         for(Integer materialId : _materials) {
             Material material = Material.getMaterial(materialId);
-            getLogger().info("Checking for " + material.name());
+//            getLogger().info("Checking for " + material.name());
             if (inventory.contains(material)) {
-                getLogger().info("Found " + material.name());
+//                getLogger().info("Found " + material.name());
                 Map<Integer, ItemStack> itemstacks = (Map<Integer, ItemStack>) inventory.all(material);
                 for(Map.Entry<Integer, ItemStack> stack : itemstacks.entrySet()) {
-                    getLogger().info("Checking slot " + stack.getKey().toString());
+//                    getLogger().info("Checking slot " + stack.getKey().toString());
                     if (stack.getValue().hasItemMeta() && stack.getValue().getItemMeta().hasDisplayName()) {
                         String name = stack.getValue().getItemMeta().getDisplayName();
-                        getLogger().info("Has a name: " + name);
+//                        getLogger().info("Has a name: " + name);
                         for (String keyword : _keywords) {
-                            getLogger().info("Checking name for keyword " + keyword);
+//                            getLogger().info("Checking name for keyword " + keyword);
                             if (name.contains(keyword)) {
-                                getLogger().info("Found " + keyword);
+//                                getLogger().info("Found " + keyword);
                                 inventory.remove(stack.getValue());
                                 break;
                             }
