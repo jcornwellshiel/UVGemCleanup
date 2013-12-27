@@ -10,6 +10,7 @@ import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -36,16 +37,28 @@ public final class UVGemCleanup extends JavaPlugin implements Listener {
     }
     
     @EventHandler
-    private void onEntityDeathEvent(InventoryOpenEvent event) {
-        for(Integer material : _materials) {
-            if (event.getInventory().contains(Material.getMaterial(material))) {
-                Map<Integer, ItemStack> itemstacks = (Map<Integer, ItemStack>) event.getInventory().all(Material.getMaterial(material));
+    private void onInventoryOpenEvent(InventoryOpenEvent event) {
+        checkInventory(event.getInventory());
+        
+    }
+
+    private void checkInventory(Inventory inventory) {
+        for(Integer materialId : _materials) {
+            Material material = Material.getMaterial(materialId);
+            getLogger().info("Checking for " + material.name());
+            if (inventory.contains(material)) {
+                getLogger().info("Found " + material.name());
+                Map<Integer, ItemStack> itemstacks = (Map<Integer, ItemStack>) inventory.all(material);
                 for(Map.Entry<Integer, ItemStack> stack : itemstacks.entrySet()) {
+                    getLogger().info("Checking slot " + stack.getKey().toString());
                     if (stack.getValue().hasItemMeta() && stack.getValue().getItemMeta().hasDisplayName()) {
                         String name = stack.getValue().getItemMeta().getDisplayName();
+                        getLogger().info("Has a name: " + name);
                         for (String keyword : _keywords) {
+                            getLogger().info("Checking name for keyword " + keyword);
                             if (name.contains(keyword)) {
-                                stack.getValue().setAmount(0);
+                                getLogger().info("Found " + keyword);
+                                inventory.remove(stack.getValue());
                                 break;
                             }
                         }
